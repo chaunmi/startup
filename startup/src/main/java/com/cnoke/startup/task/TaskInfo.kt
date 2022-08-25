@@ -16,7 +16,7 @@ data class TaskInfo(
     var process: Set<String>,
     var depends: Set<String>,
     var task: InitTask,
-    var children: MutableSet<TaskInfo> = mutableSetOf(),
+    var children: MutableSet<TaskInfo> = mutableSetOf(),  //依赖当前任务的任务
     var priority: Int = 0
 )
 

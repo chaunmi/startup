@@ -46,8 +46,4 @@ class Test2 private constructor(): IApplication{
     override fun onConfigurationChanged(newConfig: Configuration) {
         Log.e(TAG,"onConfigurationChanged")
     }
-
-    override fun defaultTask() {
-        Log.e(TAG,"defaultTask")
-    }
 }

@@ -1,6 +1,7 @@
 package com.cnoke.test1
 
 import android.app.Application
+import android.util.Log
 import com.cnoke.startup.task.InitTask
 import kotlinx.coroutines.delay
 
@@ -16,6 +17,7 @@ class Task1 : InitTask{
 
     override suspend fun execute(application: Application) {
         delay(1000)
+        Log.e(Test1.TAG, " execute: ${name()}")
     }
 }
 
@@ -25,6 +27,7 @@ class Task11 : InitTask{
 
     override suspend fun execute(application: Application) {
         delay(1000)
+        Log.e(Test1.TAG, " execute: ${name()}")
     }
 }
 
@@ -36,6 +39,7 @@ class Task12 : InitTask{
 
     override suspend fun execute(application: Application) {
         delay(1000)
+        Log.e(Test1.TAG, " execute: ${name()}")
     }
 }
 
@@ -49,5 +53,6 @@ class Task13 : InitTask{
 
     override suspend fun execute(application: Application) {
         delay(3000)
+        Log.e(Test1.TAG, " execute: ${name()}")
     }
 }

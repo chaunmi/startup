@@ -1,12 +1,20 @@
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 def sonatypeRepositoryUrl
 
-def isReleaseBuild() {
-    return VERSION_NAME.contains("SNAPSHOT") == false
+def isLocalDebug() {
+    return VERSION_NAME.contains("LOCAL")
 }
-if (isReleaseBuild()) {
+
+def isReleaseBuild() {
+    return !VERSION_NAME.contains("SNAPSHOT")
+}
+
+if(isLocalDebug()) {
+    println 'LOCAL BUILD'
+    sonatypeRepositoryUrl = '../repo-local'
+}else if (isReleaseBuild()) {
     println 'RELEASE BUILD'
     sonatypeRepositoryUrl = hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
             : "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -45,54 +53,77 @@ if (secretPropsFile.exists()) {
 }
 
 afterEvaluate { project ->
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { deployment -> signing.signPom(deployment) }
-                pom.groupId = GROUP_ID
-                pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME
-
-                repository(url: sonatypeRepositoryUrl) {
-                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+    publishing {
+        publications  {
+            release(MavenPublication) {
+            //    beforeDeployment { deployment -> signing.signPom(deployment) }
+                if (plugins.hasPlugin('android-library')) {
+                    from components.release
+                } else if (plugins.hasPlugin('java')) {
+                    from components.java
+                    jar.preserveFileTimestamps = false
+                    jar.reproducibleFileOrder = true
                 }
 
-                pom.project {
-                    name POM_NAME
-                    packaging POM_PACKAGING
-                    description POM_DESCRIPTION
-                    url POM_URL
+                groupId = GROUP_ID
+                artifactId = POM_ARTIFACT_ID
+                version = VERSION_NAME
+                println " verison_name: " + VERSION_NAME + ", GROUP_ID: " + GROUP_ID + ", POM_ARTIFACT_ID: " + POM_ARTIFACT_ID
+
+                pom {
+                    name = POM_NAME
+                    packaging = POM_PACKAGING
+                    description = POM_DESCRIPTION
+                    url = POM_URL
 
                     scm {
-                        url POM_SCM_URL
-                        connection POM_SCM_CONNECTION
-                        developerConnection POM_SCM_DEV_CONNECTION
+                        url = POM_SCM_URL
+                        connection = POM_SCM_CONNECTION
+                        developerConnection = POM_SCM_DEV_CONNECTION
                     }
 
                     licenses {
                         license {
-                            name POM_LICENCE_NAME
-                            url POM_LICENCE_URL
-                            distribution POM_LICENCE_DIST
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
                         }
                     }
 
                     developers {
                         developer {
-                            id POM_DEVELOPER_ID
-                            name POM_DEVELOPER_NAME
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
                         }
                     }
                 }
             }
         }
+        repositories {
+            maven {
+                if(isLocalDebug()) {
+                    println " local debug archives " + sonatypeRepositoryUrl
+                    url = sonatypeRepositoryUrl
+                }else {
+                    println " remote  archives " + sonatypeRepositoryUrl
+                    url = sonatypeRepositoryUrl
+//                    repository(url: sonatypeRepositoryUrl) {
+//                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+//                    }
+                    credentials {
+                        username = getRepositoryUsername()
+                        password = getRepositoryPassword()
+                    }
+                }
+            }
+
+        }
     }
 
-    signing {
-        println 'Signing archives...'
-        sign configurations.archives
-    }
-
-
+//    signing {
+//        println 'Signing archives...'
+//        sign publishing.publications.release
+//    }
+//
 }
 

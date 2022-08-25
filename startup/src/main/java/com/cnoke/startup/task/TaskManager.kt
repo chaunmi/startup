@@ -145,6 +145,7 @@ internal class TaskManager private constructor(
                 SLog.e( "任务 [${task.name}] error $it")
             }
         }
+        //当前任务执行完后检测依赖当前任务的任务，并执行
         afterExecute(task.name, task.children)
     }
 

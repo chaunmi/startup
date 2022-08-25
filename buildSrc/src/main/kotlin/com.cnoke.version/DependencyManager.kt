@@ -32,5 +32,12 @@ object Kt {
 }
 
 object Depend{
-    val startupApi = "io.github.cnoke.startup:api:1.1.0"
+    val startupApi = "io.github.cnoke.startup:api:1.1.5-LOCAL"
+}
+
+object ASM {
+    val asm_version = "9.2"
+    val asm =  "org.ow2.asm:asm:$asm_version"
+    val asmUtil =  "org.ow2.asm:asm-util:$asm_version"
+    val asmCommons = "org.ow2.asm:asm-commons:$asm_version"
 }
