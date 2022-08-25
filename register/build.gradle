@@ -21,39 +21,3 @@ dependencies {
 }
 
 apply from: rootProject.file('gradle/maven_push.gradle')
-
-// Add compile dependencies to javadoc
-afterEvaluate {
-    javadoc.classpath
-}
-
-// This generates javadoc.jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-}
-
-// This generates sources.jar
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from sourceSets.main.java.srcDirs
- //   from project.file('src/main/groovy')
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-
-// javadoc configuration
-javadoc {
-    options{
-        encoding "UTF-8"
-        charSet 'UTF-8'
-        author true
-        version VERSION_NAME
-        links "http://docs.oracle.com/javase/7/docs/api"
-        title POM_ARTIFACT_ID
-    }
-}
