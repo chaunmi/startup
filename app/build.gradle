@@ -2,7 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'startup-register'
+//    id 'startup-register'
+    id 'startup-register-action'
 }
 
 android {
@@ -34,6 +35,31 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 }
+
+//project.ext.registerInfoList = [
+//        [
+//                'scanInterface'             : 'com.cnoke.startup.application.IApplication'
+//                , 'codeInsertToClassName'   : 'com.cnoke.startup.FinalAppRegister'
+//                ,'codeInsertToMethodName'   :  'init'
+//                //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
+//                ,'registerClassName'        :  'com.cnoke.startup.FinalAppRegister'
+//                , 'registerMethodName'      : 'register'
+//                ,'isInstance'               : true
+//        ],
+//        [
+//                'scanInterface'             : 'com.cnoke.startup.task.InitTask'
+//                , 'codeInsertToClassName'   : 'com.cnoke.startup.FinalTaskRegister'
+//                ,'codeInsertToMethodName'   :  'init'
+//                //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
+//                ,'registerClassName'        :  'com.cnoke.startup.FinalTaskRegister'
+//                , 'registerMethodName'      : 'register'
+//                , 'isInstance'              : false
+//        ]
+//]
+//
+//autoregister {
+//    registerInfo = registerInfoList
+//}
 
 dependencies {
 

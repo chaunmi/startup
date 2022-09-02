@@ -39,23 +39,33 @@ public class RegisterPlugin implements Plugin<Project> {
             config = new  AutoRegisterConfig()
         }
 
-        Map<String, Object> startup = [:]
-        startup.(AutoRegisterConfig.INTERFACE_NAME) = "com.cnoke.startup.application.IApplication"
-        startup.(AutoRegisterConfig.INSERT_TO_CLASS_NAME) = "com.cnoke.startup.FinalAppRegister"
-        startup.(AutoRegisterConfig.INSERT_TO_METHOD_NAME) = "init"
-        startup.(AutoRegisterConfig.REGISTER_CLASS_NAME) = "com.cnoke.startup.FinalAppRegister"
-        startup.(AutoRegisterConfig.REGISTER_METHOD_NAME) = "register"
-        startup.(AutoRegisterConfig.IS_INSTANCE) = true
-        config.registerInfo.add(startup)
+        println "AutoRegisterConfig init size: " + config.registerInfo.size()
+        if(config.registerInfo.size() > 0) {
+            config.registerInfo.forEach {
+                it.entrySet().forEach {
+                    println it.key + ": " + it.value
+                }
+            }
+        }
+        println "AutoRegisterConfig init end "
 
-        Map<String, Object> initTask = [:]
-        initTask.(AutoRegisterConfig.INTERFACE_NAME) = "com.cnoke.startup.task.InitTask"
-        initTask.(AutoRegisterConfig.INSERT_TO_CLASS_NAME) = "com.cnoke.startup.FinalTaskRegister"
-        initTask.(AutoRegisterConfig.INSERT_TO_METHOD_NAME) = "init"
-        initTask.(AutoRegisterConfig.REGISTER_CLASS_NAME) = "com.cnoke.startup.FinalTaskRegister"
-        initTask.(AutoRegisterConfig.REGISTER_METHOD_NAME) = "register"
-        initTask.(AutoRegisterConfig.IS_INSTANCE) = false
-        config.registerInfo.add(initTask)
+//        Map<String, Object> startup = [:]
+//        startup.(AutoRegisterConfig.INTERFACE_NAME) = "com.cnoke.startup.application.IApplication"
+//        startup.(AutoRegisterConfig.INSERT_TO_CLASS_NAME) = "com.cnoke.startup.FinalAppRegister"
+//        startup.(AutoRegisterConfig.INSERT_TO_METHOD_NAME) = "init"
+//        startup.(AutoRegisterConfig.REGISTER_CLASS_NAME) = "com.cnoke.startup.FinalAppRegister"
+//        startup.(AutoRegisterConfig.REGISTER_METHOD_NAME) = "register"
+//        startup.(AutoRegisterConfig.IS_INSTANCE) = true
+//        config.registerInfo.add(startup)
+//
+//        Map<String, Object> initTask = [:]
+//        initTask.(AutoRegisterConfig.INTERFACE_NAME) = "com.cnoke.startup.task.InitTask"
+//        initTask.(AutoRegisterConfig.INSERT_TO_CLASS_NAME) = "com.cnoke.startup.FinalTaskRegister"
+//        initTask.(AutoRegisterConfig.INSERT_TO_METHOD_NAME) = "init"
+//        initTask.(AutoRegisterConfig.REGISTER_CLASS_NAME) = "com.cnoke.startup.FinalTaskRegister"
+//        initTask.(AutoRegisterConfig.REGISTER_METHOD_NAME) = "register"
+//        initTask.(AutoRegisterConfig.IS_INSTANCE) = false
+//        config.registerInfo.add(initTask)
 
         config.project = project
         config.convertConfig()

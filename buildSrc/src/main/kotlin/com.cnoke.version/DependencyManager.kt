@@ -40,4 +40,5 @@ object ASM {
     val asm =  "org.ow2.asm:asm:$asm_version"
     val asmUtil =  "org.ow2.asm:asm-util:$asm_version"
     val asmCommons = "org.ow2.asm:asm-commons:$asm_version"
+    val asmTree = "org.ow2.asm:asm-tree:$asm_version"
 }

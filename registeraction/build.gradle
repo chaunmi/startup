@@ -1,0 +1,46 @@
+plugins {
+    id 'kotlin'
+ //   id 'kotlin-kapt'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation "com.android.tools.build:gradle:7.2.1"
+    // Kotlin 依赖 —— 插件使用 Kotlin 实现
+//    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10") {
+//        exclude(group = "org.ow2.asm")
+//    }
+
+    implementation 'com.android.tools:common:30.2.2'
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "commons-codec:commons-codec:1.15"
+    implementation "commons-io:commons-io:2.11.0"
+    implementation ASM.asm
+    implementation ASM.asmUtil
+    implementation ASM.asmCommons
+}
+
+//apply from: rootProject.file('gradle/maven_push.gradle')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'io.github.cnoke.startup'
+            artifactId = 'register-action'
+            version = '1.0.5-LOCAL'
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url  = parent.layout.projectDirectory.dir('repo-local')
+        }
+    }
+}
