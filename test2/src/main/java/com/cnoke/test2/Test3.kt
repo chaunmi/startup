@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import com.cnoke.startup.application.IApplication
 import android.util.Log
+import com.chaunmi.startup.annotation.StartupInitApplication
 
 /**
  * @date on 2022/1/1
@@ -11,6 +12,7 @@ import android.util.Log
  * @title
  * @describe
  */
+@StartupInitApplication
 class Test2 private constructor(): IApplication{
 
     /**

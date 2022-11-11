@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -34,7 +36,15 @@ android {
 dependencies {
 
     implementation Depend.startupApi
+    implementation Depend.startupAnnotation
 //    implementation project(":startup")
     implementation Kt.coroutineCore
     implementation Kt.coroutineAndroid
+
+  //  kapt "io.github.cnoke.startup:ksp-compiler-kapt:1.0.1-LOCAL"
+    ksp Depend.kspStartupCompiler
+}
+
+ksp {
+    arg("moduleName", project.name)
 }

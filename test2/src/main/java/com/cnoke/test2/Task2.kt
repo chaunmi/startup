@@ -2,6 +2,7 @@ package com.cnoke.test2
 
 import android.app.Application
 import android.util.Log
+import com.chaunmi.startup.annotation.StartupInitTask
 import com.cnoke.startup.task.InitTask
 import kotlinx.coroutines.delay
 
@@ -11,6 +12,7 @@ import kotlinx.coroutines.delay
  * @title
  * @describe
  */
+@StartupInitTask
 class Task2  : InitTask {
 
     override fun name() = "Task2"
@@ -22,7 +24,7 @@ class Task2  : InitTask {
         Log.e(Test2.TAG, " execute: ${name()}")
     }
 }
-
+@StartupInitTask
 class Task21  : InitTask {
 
     override fun name() = "Task21"
@@ -36,7 +38,7 @@ class Task21  : InitTask {
         Log.e(Test2.TAG, " execute: ${name()}")
     }
 }
-
+@StartupInitTask
 class Task22  : InitTask {
 
     override fun name() = "Task22"

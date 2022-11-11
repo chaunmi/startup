@@ -16,13 +16,33 @@ class RegisterPlugin : Plugin<Project>{
         if(isApp) {
             val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
             androidComponents.onVariants { variant ->
-                variant.instrumentation.transformClassesWith(CodeInsertTransform::class.java, InstrumentationScope.ALL) {
-                    it.registerConfig.set(getRegisterConfigData(project))
+                if(variant.name == "debug") {
+                    AutoRegisterHelper.classArray.forEach {
+                        println(" find class $it ")
+                    }
+                    println("==================== codeInsert start ${variant.name}=======================")
+                    variant.instrumentation.transformClassesWith(CodeInsertTransform::class.java, InstrumentationScope.ALL) {
+                        it.registerConfig.set(getRegisterConfigData(project))
+                    }
+                    variant.instrumentation.setAsmFramesComputationMode(
+                        FramesComputationMode.COPY_FRAMES
+                    )
+                    println("==================== codeInsert end ${variant.name}=======================")
                 }
-                variant.instrumentation.setAsmFramesComputationMode(
-                    FramesComputationMode.COPY_FRAMES
-                )
             }
+
+//            androidComponents.onVariants { variant ->
+//                if(variant.name == "debug") {
+//                    println("==================== codeInsert scan start ${variant.name}=======================")
+//                    variant.instrumentation.transformClassesWith(CodeScanTransform::class.java, InstrumentationScope.ALL) {
+//                        it.registerConfig.set(getRegisterConfigData(project))
+//                    }
+//                    variant.instrumentation.setAsmFramesComputationMode(
+//                        FramesComputationMode.COPY_FRAMES
+//                    )
+//                    println("==================== codeInsert scan end ${variant.name}=======================")
+//                }
+//            }
         }
     }
 
@@ -66,6 +86,7 @@ class RegisterPlugin : Plugin<Project>{
             initApp.initMethodName = "init"
             initApp.registerClassName = "com.cnoke.startup.FinalAppRegister"
             initApp.registerMethodName = "register"
+
             config.list.add(initApp)
 
             val initTask = RegisterInfoData()

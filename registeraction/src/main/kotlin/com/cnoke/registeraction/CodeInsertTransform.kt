@@ -15,6 +15,7 @@ import org.objectweb.asm.Opcodes
 interface RegisterConfigParams : InstrumentationParameters {
     @get:Input
     val registerConfig: Property<AutoRegisterConfigData>
+
 }
 
 abstract class CodeInsertTransform: AsmClassVisitorFactory<RegisterConfigParams> {
@@ -22,7 +23,7 @@ abstract class CodeInsertTransform: AsmClassVisitorFactory<RegisterConfigParams>
         classContext: ClassContext,
         nextClassVisitor: ClassVisitor
     ): ClassVisitor {
-    //   println("createClassVisitor CodeInsertTransform")
+       println("createClassVisitor CodeInsertTransform , ${AutoRegisterHelper.getProcessID()}")
        return InsertClassVisitor(parameters.get().registerConfig.get(), Opcodes.ASM9, nextClassVisitor)
     }
 

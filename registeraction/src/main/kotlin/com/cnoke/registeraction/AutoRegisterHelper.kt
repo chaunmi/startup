@@ -5,11 +5,18 @@ import com.google.gson.Gson
 import org.gradle.api.Project
 import java.io.File
 import java.io.FileNotFoundException
+import java.lang.management.ManagementFactory
 import java.lang.reflect.Type
 
 object AutoRegisterHelper {
     const val CACHE_INFO_DIR = "startup-register"
 
+    val classArray = ArrayList<String>()
+
+    fun getProcessID(): String {
+        val runtimeMXBean = ManagementFactory.getRuntimeMXBean()
+        return runtimeMXBean.name + "@" + Integer.valueOf(runtimeMXBean.name.split("@")[0]).toInt()
+    }
     /**
      * 缓存自动注册配置的文件
      * @param project

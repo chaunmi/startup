@@ -3,6 +3,7 @@ package com.cnoke.test1
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
+import com.chaunmi.startup.annotation.StartupInitApplication
 import com.cnoke.startup.application.IApplication
 
 /**
@@ -11,6 +12,7 @@ import com.cnoke.startup.application.IApplication
  * @title
  * @describe
  */
+@StartupInitApplication
 class Test1 private constructor(): IApplication{
 
     /**

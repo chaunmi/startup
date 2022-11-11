@@ -33,6 +33,13 @@ object Kt {
 
 object Depend{
     val startupApi = "io.github.cnoke.startup:api:1.1.5-LOCAL"
+    val startupAnnotation = "io.github.cnoke.startup:annotation:1.0.0-LOCAL"
+
+    val kspApiVersion = "1.6.10-1.0.4"
+    val kspApi = "com.google.devtools.ksp:symbol-processing-api:${kspApiVersion}"
+
+    val kspCompilerVersion = "1.0.2-LOCAL"
+    val kspStartupCompiler = "io.github.cnoke.startup:ksp-compiler:$kspCompilerVersion"
 }
 
 object ASM {

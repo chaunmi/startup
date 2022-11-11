@@ -1,0 +1,33 @@
+plugins {
+    id 'kotlin'
+    id 'kotlin-kapt'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    annotationProcessor("com.google.auto.service:auto-service:1.0")
+    implementation "com.google.auto.service:auto-service:1.0"
+    implementation Depend.startupAnnotation
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'io.github.cnoke.startup'
+            artifactId = 'ksp-compiler-kapt'
+            version = '1.0.1-LOCAL'
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url  = parent.layout.projectDirectory.dir('repo-local')
+        }
+    }
+}

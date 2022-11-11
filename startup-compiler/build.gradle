@@ -1,0 +1,35 @@
+plugins {
+    id 'kotlin'
+    //   id 'kotlin-kapt'
+    id 'maven-publish'
+    id 'com.google.devtools.ksp'
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    implementation Depend.startupAnnotation
+
+    implementation Depend.kspApi
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'io.github.cnoke.startup'
+            artifactId = 'ksp-compiler'
+            version = "${Depend.kspCompilerVersion}"
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url  = parent.layout.projectDirectory.dir('repo-local')
+        }
+    }
+}

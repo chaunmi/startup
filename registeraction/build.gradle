@@ -2,11 +2,13 @@ plugins {
     id 'kotlin'
  //   id 'kotlin-kapt'
     id 'maven-publish'
+    id 'com.google.devtools.ksp'
 }
 
 repositories {
     mavenCentral()
 }
+
 
 dependencies {
     implementation gradleApi()
@@ -17,6 +19,7 @@ dependencies {
 //        exclude(group = "org.ow2.asm")
 //    }
 
+    implementation Depend.startupAnnotation
     implementation 'com.android.tools:common:30.2.2'
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "commons-codec:commons-codec:1.15"
@@ -24,6 +27,8 @@ dependencies {
     implementation ASM.asm
     implementation ASM.asmUtil
     implementation ASM.asmCommons
+
+    implementation Depend.kspApi
 }
 
 //apply from: rootProject.file('gradle/maven_push.gradle')
@@ -33,7 +38,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = 'io.github.cnoke.startup'
             artifactId = 'register-action'
-            version = '1.0.5-LOCAL'
+            version = '1.0.7-LOCAL'
 
             from components.java
         }
