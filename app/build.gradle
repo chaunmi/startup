@@ -77,14 +77,8 @@ dependencies {
     implementation Depend.startupAnnotation
 
 
-  //  implementation("io.github.cnoke.startup:ksp-compiler:1.0.0-LOCAL")
-    ksp Depend.kspStartupCompiler
- //   ksp(project(":registeraction"))
-
- //   kapt "io.github.cnoke.startup:ksp-compiler-kapt:1.0.1-LOCAL"
- //   kapt(project(":startup-compiler-kapt"))
-  //  implementation(project(":startup-compiler"))
-  //  ksp(project(":startup-compiler"))
+  //  ksp Depend.kspStartupCompiler
+    kapt Depend.kaptStartupCompiler
 
 }
 ksp {

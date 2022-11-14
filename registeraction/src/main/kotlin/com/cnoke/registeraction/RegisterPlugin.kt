@@ -6,28 +6,38 @@ import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel
+import java.io.File
 
 class RegisterPlugin : Plugin<Project>{
     override fun apply(project: Project) {
         //返回插件的类型
         val isApp = project.plugins.hasPlugin(AppPlugin::class.java)
         project.extensions.create(EXT_NAME, AutoRegisterConfig::class.java)
+        project.logger.log(LogLevel.INFO, " RegisterPlugin -->$isApp ")
         println("RegisterPlugin -->$isApp")
         if(isApp) {
             val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
+
+            println("name: ${project.name}, subprojects size: ${project.subprojects.size}")
+            project.parent?.allprojects?.forEach {
+                println("subproject name: ${it.name}")
+            }
             androidComponents.onVariants { variant ->
                 if(variant.name == "debug") {
                     AutoRegisterHelper.classArray.forEach {
                         println(" find class $it ")
                     }
-                    println("==================== codeInsert start ${variant.name}=======================")
+
+                    project.logger.log(LogLevel.INFO, "==================== codeInsert start ${variant.name}=======================")
                     variant.instrumentation.transformClassesWith(CodeInsertTransform::class.java, InstrumentationScope.ALL) {
-                        it.registerConfig.set(getRegisterConfigData(project))
+                        it.registerConfig.set(getRegisterConfigData(project, variant = variant.name))
                     }
                     variant.instrumentation.setAsmFramesComputationMode(
                         FramesComputationMode.COPY_FRAMES
                     )
-                    println("==================== codeInsert end ${variant.name}=======================")
+                    project.logger.log(LogLevel.INFO, "==================== codeInsert end ${variant.name}=======================")
+
                 }
             }
 
@@ -49,7 +59,7 @@ class RegisterPlugin : Plugin<Project>{
     companion object {
        const val EXT_NAME = "autoregister"
 
-        fun getRegisterConfigData(project: Project): AutoRegisterConfigData {
+        fun getRegisterConfigData(project: Project, variant: String): AutoRegisterConfigData {
 //            var config = project.extensions.findByName(EXT_NAME) as? AutoRegisterConfigData
 //
 //            if(config == null || config.registerInfo.isEmpty()){
@@ -102,6 +112,11 @@ class RegisterPlugin : Plugin<Project>{
 
 
             config.list.add(initTask)
+
+            project.parent?.allprojects?.forEach {
+                println("subproject name: ${it.name}")
+                config.moduleList.add(AutoRegisterHelper.getKspFileDir(it) + variant + File.separator + "resources" + File.separator + "startup" + File.separator + "${it.name}_startup_config.json")
+            }
 
         //    config.project = project
         //    config.convertToRegisterInfo()

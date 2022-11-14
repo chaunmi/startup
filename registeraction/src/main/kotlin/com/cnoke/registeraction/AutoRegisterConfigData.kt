@@ -5,6 +5,7 @@ import java.io.Serializable
 
 class AutoRegisterConfigData(var list: ArrayList<RegisterInfoData> = ArrayList<RegisterInfoData>(),
                              var cacheEnabled: Boolean = true,
+                             var moduleList: ArrayList<String> = ArrayList()
                              ): Serializable, Cloneable {
 
 //    @Transient

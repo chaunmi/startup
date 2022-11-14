@@ -40,6 +40,9 @@ object Depend{
 
     val kspCompilerVersion = "1.0.2-LOCAL"
     val kspStartupCompiler = "io.github.cnoke.startup:ksp-compiler:$kspCompilerVersion"
+
+    val kaptCompilerVersion = "1.0.1-LOCAL"
+    val kaptStartupCompiler = "io.github.cnoke.startup:kapt-compiler:$kaptCompilerVersion"
 }
 
 object ASM {

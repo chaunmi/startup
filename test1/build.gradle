@@ -41,8 +41,8 @@ dependencies {
     implementation Kt.coroutineCore
     implementation Kt.coroutineAndroid
 
-  //  kapt "io.github.cnoke.startup:ksp-compiler-kapt:1.0.1-LOCAL"
     ksp Depend.kspStartupCompiler
+  //  kapt Depend.kaptStartupCompiler
 }
 
 ksp {

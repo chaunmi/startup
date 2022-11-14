@@ -19,7 +19,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = 'io.github.cnoke.startup'
-            artifactId = 'ksp-compiler-kapt'
+            artifactId = 'kapt-compiler'
             version = '1.0.1-LOCAL'
 
             from components.java

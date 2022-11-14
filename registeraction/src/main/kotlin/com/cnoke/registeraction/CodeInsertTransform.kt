@@ -1,12 +1,16 @@
 package com.cnoke.registeraction
 
-import com.android.build.api.instrumentation.*
-import org.gradle.api.provider.ListProperty
+import com.android.build.api.instrumentation.AsmClassVisitorFactory
+import com.android.build.api.instrumentation.ClassContext
+import com.android.build.api.instrumentation.ClassData
+import com.android.build.api.instrumentation.InstrumentationParameters
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
+import java.io.File
+import java.text.SimpleDateFormat
 
 /**
  * 注意参数必须是可Serialization
@@ -15,7 +19,6 @@ import org.objectweb.asm.Opcodes
 interface RegisterConfigParams : InstrumentationParameters {
     @get:Input
     val registerConfig: Property<AutoRegisterConfigData>
-
 }
 
 abstract class CodeInsertTransform: AsmClassVisitorFactory<RegisterConfigParams> {
@@ -34,8 +37,14 @@ abstract class CodeInsertTransform: AsmClassVisitorFactory<RegisterConfigParams>
      */
     override fun isInstrumentable(classData: ClassData): Boolean {
         val registerInfoList = parameters.get().registerConfig.get().list
+        val moduleList = parameters.get().registerConfig.get().moduleList
         registerInfoList.forEach {
             if(it.initClassName == classData.className){
+
+                //TODO 没啥用，全部为false，也即全部为false， transform跑到kapt前面去了
+                moduleList.forEach { configFilePath ->
+                    println("isInstrumentable moduelConfig: $configFilePath, fileExist: ${File(configFilePath).exists()}")
+                }
                 return true
             }
         }
@@ -118,9 +127,11 @@ abstract class CodeInsertTransform: AsmClassVisitorFactory<RegisterConfigParams>
 
  class InsertMethodVisitor(private val registerInfo: RegisterInfoData, api: Int, mv: MethodVisitor, var _static: Boolean) : MethodVisitor(api, mv) {
 
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     override fun visitInsn(opcode: Int) {
         if ((opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)) {
-            println(" insert register code to class ${registerInfo.initClassName} ")
+
+            println("[${dateFormat.format(System.currentTimeMillis())}] insert register code to class ${registerInfo.initClassName} ")
             registerInfo.classList.forEach { name ->
                 if (!_static) {
                     //加载this

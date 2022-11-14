@@ -10,6 +10,7 @@ import java.lang.reflect.Type
 
 object AutoRegisterHelper {
     const val CACHE_INFO_DIR = "startup-register"
+    const val KSP_DIR = "ksp"
 
     val classArray = ArrayList<String>()
 
@@ -61,6 +62,11 @@ object AutoRegisterHelper {
     private fun  getCacheFileDir(project: Project): String {
         return project.buildDir.absolutePath + File.separator + SdkConstants.FD_INTERMEDIATES + File.separator + CACHE_INFO_DIR + File.separator
     }
+
+    fun  getKspFileDir(project: Project): String {
+        return project.buildDir.absolutePath + File.separator + SdkConstants.FD_GENERATED + File.separator + KSP_DIR + File.separator
+    }
+
 
     /**
      * 读取文件内容并创建Map
