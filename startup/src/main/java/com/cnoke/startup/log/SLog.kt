@@ -32,7 +32,7 @@ internal object SLog {
 
     fun init(isShowLog: Boolean, tag: String?) {
         IS_SHOW_LOG = isShowLog
-        mGlobalTag = tag
+        mGlobalTag = tag?: TAG_DEFAULT
         mIsGlobalTagEmpty = mGlobalTag.isNullOrEmpty()
     }
 

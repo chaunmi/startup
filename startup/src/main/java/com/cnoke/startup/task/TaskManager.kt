@@ -1,5 +1,6 @@
 package com.cnoke.startup.task
 
+import android.util.Log
 import com.cnoke.startup.FinalTaskRegister
 import com.cnoke.startup.log.SLog
 import com.cnoke.startup.task.comparator.AnchorComparator
@@ -79,17 +80,17 @@ internal class TaskManager private constructor(
 
             // 无依赖的异步任务
             singleAsyncTasks.sortedWith(AnchorComparator()).forEach { task ->
-                launchTask(task)
+                launchTask(this, task)
             }
 
             // 无依赖的同步任务
             singleSyncTasks.sortedWith(AnchorComparator()).forEach { task ->
-                launchTask(task)
+                launchTask(this, task)
             }
         }
     }
 
-    private suspend fun CoroutineScope.launchTask(task : TaskInfo){
+    private suspend fun launchTask(coroutineScope: CoroutineScope, task: TaskInfo){
         val dispatcher = if (task.background) {
             //子线程任务用子线程
             Dispatchers.Default
@@ -103,10 +104,14 @@ internal class TaskManager private constructor(
 
         if(task.anchor){
             //锚点任务跟随主线程生命周期
-            launch(dispatcher) { execute(task) }
+            coroutineScope.launch(dispatcher) {
+                execute(this, task)
+            }
         }else{
             //非锚点任务生命周期独立
-            GlobalScope.launch(dispatcher) { execute(task) }
+            GlobalScope.launch(dispatcher) {
+                execute(this, task)
+            }
         }
     }
 
@@ -123,7 +128,7 @@ internal class TaskManager private constructor(
         }
     }
 
-    private suspend fun CoroutineScope.execute(task: TaskInfo) {
+    private suspend fun execute(coroutineScope: CoroutineScope, task: TaskInfo) {
         if(startup.isDebug){
             SLog.d("任务 [${task.name}] 开始 运行进程: [${startup.processName}] " +
                     "运行线程: [${Thread.currentThread().name}]"
@@ -132,7 +137,7 @@ internal class TaskManager private constructor(
                 kotlin.runCatching {
                     task.task.execute(startup.app)
                 }.onFailure {
-                    SLog.e( "任务 [${task.name}] error $it")
+                    SLog.e( "任务 [${task.name}] error ${Log.getStackTraceString(it)}")
                 }
             }
             SLog.d("任务 [${task.name}] 锚点 ${task.anchor} 完成 运行进程: [${startup.processName}] " +
@@ -142,14 +147,18 @@ internal class TaskManager private constructor(
             kotlin.runCatching {
                 task.task.execute(startup.app)
             }.onFailure {
-                SLog.e( "任务 [${task.name}] error $it")
+                SLog.e( "任务 [${task.name}] error ${Log.getStackTraceString(it)}")
             }
         }
         //当前任务执行完后检测依赖当前任务的任务，并执行
-        afterExecute(task.name, task.children)
+        afterExecute(coroutineScope, task.name, task.children)
     }
 
-    private suspend fun CoroutineScope.afterExecute(name: String, children: Set<TaskInfo>) {
+    private suspend fun afterExecute(
+        coroutineScope: CoroutineScope,
+        name: String,
+        children: Set<TaskInfo>
+    ) {
         val allowTasks = mutex.withLock {
             completedTasks.add(name)
             children.filter { completedTasks.containsAll(it.depends) }
@@ -157,12 +166,15 @@ internal class TaskManager private constructor(
         if (ThreadUtils.isInMainThread()) {
             // 如果是主线程，先将异步任务放入队列，再执行同步任务
             allowTasks.filter { it.background }.sortedWith(AnchorComparator()).forEach {
-                launchTask(it)
+                launchTask(coroutineScope, it)
             }
-            allowTasks.filter { it.background.not() }.sortedWith(AnchorComparator()).forEach { execute(it) }
+            allowTasks.filter { it.background.not() }.sortedWith(AnchorComparator()).forEach { execute(
+                coroutineScope,
+                it
+            ) }
         } else {
             allowTasks.sortedWith(AnchorComparator()).forEach {
-                launchTask(it)
+                launchTask(coroutineScope, it)
             }
         }
     }
@@ -173,7 +185,7 @@ internal class TaskManager private constructor(
          * 启动任务
          */
         fun start(startUp: StartUp) {
-            SLog.init(startUp.isDebug,"startUp")
+            SLog.init(startUp.isDebug,"StartUp")
             TaskManager(startUp).start()
         }
     }
