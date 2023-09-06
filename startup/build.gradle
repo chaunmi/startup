@@ -35,5 +35,5 @@ dependencies {
     compileOnly Kt.coroutineAndroid
 }
 
-apply from: rootProject.file('gradle/maven_push.gradle')
+apply from: rootProject.file('buildSrc/maven_push.gradle')
 

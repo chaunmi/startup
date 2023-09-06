@@ -7,6 +7,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://maven.aliyun.com/repository/gradle-plugin"
+    }
 }
 
 
@@ -14,12 +17,15 @@ dependencies {
     implementation gradleApi()
     implementation localGroovy()
     implementation "com.android.tools.build:gradle:7.4.2"
+
+  //  compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20")
+
     // Kotlin 依赖 —— 插件使用 Kotlin 实现
 //    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10") {
 //        exclude(group = "org.ow2.asm")
 //    }
 
-    implementation Depend.startupAnnotation
+//    implementation Depend.startupAnnotation
     implementation 'com.android.tools:common:30.2.2'
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "commons-codec:commons-codec:1.15"
@@ -37,8 +43,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = 'io.github.cnoke.startup'
-            artifactId = 'register-action'
-            version = '1.0.7-LOCAL'
+            artifactId = 'register-transform'
+            version = '1.0.0-LOCAL'
 
             from components.java
         }

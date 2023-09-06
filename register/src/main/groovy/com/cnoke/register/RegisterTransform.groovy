@@ -103,12 +103,14 @@ class RegisterTransform extends Transform {
                     root += File.separator
                 //遍历目录下的每个文件
                 directoryInput.file.eachFileRecurse { File file ->
+                    println " directoryInput root: " + root + ", file: " + file.absolutePath + ", leftSlash: " + leftSlash
                     def path = file.absolutePath.replace(root, '')
                     if (file.isFile()) {
                         def entryName = path
                         if (!leftSlash) {
                             entryName = entryName.replaceAll("\\\\", "/")
                         }
+                        println " directoryInput entryName: " + entryName + ", path: " + path
                         scanProcessor.checkInitClass(entryName, new File(dest.absolutePath + File.separator + path))
                         if (scanProcessor.shouldProcessClass(entryName)) {
                             scanProcessor.scanClass(file)
@@ -131,6 +133,7 @@ class RegisterTransform extends Transform {
         project.logger.error("register scan all class cost time: " + (scanFinishTime - time) + " ms")
 
         config.list.each { ext ->
+            println(" start to insert \n " + ext.toString())
             if (ext.fileContainsInitClass) {
                 println('')
                 println("insert register code to file:" + ext.fileContainsInitClass.absolutePath)
@@ -174,11 +177,13 @@ class RegisterTransform extends Transform {
         def destName = jarInput.name
         // 重名名输出文件,因为可能同名,会覆盖
         def hexName = DigestUtils.md5Hex(jarInput.file.absolutePath)
+        println " startup-register getDestFile destName: " + destName + ", hexName: " + hexName
         if (destName.endsWith(".jar")) {
             destName = destName.substring(0, destName.length() - 4)
         }
         // 获得输出文件
         File dest = outputProvider.getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
+        println " startup-register getDestFile input: " + jarInput.file.absolutePath + ", dest: " + dest.absolutePath
         return dest
     }
 

@@ -14,6 +14,6 @@ class MyApplication : StartUpApplication() {
     override fun onCreate() {
         super.onCreate()
         StartUp(this).isDebug(true).start()
-        Log.e("FinalTaskRegister","onCreate Finish")
+        Log.e("MyApplication","onCreate Finish")
     }
 }

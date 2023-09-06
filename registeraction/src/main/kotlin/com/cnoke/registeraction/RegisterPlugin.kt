@@ -4,8 +4,12 @@ import com.android.build.api.instrumentation.FramesComputationMode
 import com.android.build.api.instrumentation.InstrumentationScope
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
+import org.gradle.BuildListener
+import org.gradle.BuildResult
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.logging.LogLevel
 import java.io.File
 
@@ -37,7 +41,6 @@ class RegisterPlugin : Plugin<Project>{
                         FramesComputationMode.COPY_FRAMES
                     )
                     project.logger.log(LogLevel.INFO, "==================== codeInsert end ${variant.name}=======================")
-
                 }
             }
 
@@ -117,7 +120,6 @@ class RegisterPlugin : Plugin<Project>{
                 println("subproject name: ${it.name}")
                 config.moduleList.add(AutoRegisterHelper.getKspFileDir(it) + variant + File.separator + "resources" + File.separator + "startup" + File.separator + "${it.name}_startup_config.json")
             }
-
         //    config.project = project
         //    config.convertToRegisterInfo()
             return config

@@ -25,8 +25,8 @@ class RegisterInfo {
     //以下不是可配置参数
     ArrayList<Pattern> includePatterns = []
     ArrayList<Pattern> excludePatterns = []
-    File fileContainsInitClass //initClassName的class文件或含有initClassName类的jar文件
-    ArrayList<String> classList = new ArrayList<>()
+    File fileContainsInitClass //initClassName的class文件或含有initClassName类的jar文件，扫描的时候填入
+    ArrayList<String> classList = new ArrayList<>() //扫描的时候填入，待插入的类
 
 
     RegisterInfo(){}
@@ -97,6 +97,7 @@ class RegisterInfo {
         }
         initPattern(include, includePatterns)
         initPattern(exclude, excludePatterns)
+        println(" RegisterInfo init  " + includePatterns.size() + ", exclude: " + excludePatterns.size())
     }
 
     private static String convertDotToSlash(String str) {

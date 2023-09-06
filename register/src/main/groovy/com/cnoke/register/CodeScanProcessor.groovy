@@ -73,6 +73,7 @@ class CodeScanProcessor {
     boolean checkInitClass(String entryName, File destFile, String srcFilePath) {
         if (entryName == null || !entryName.endsWith(".class"))
             return
+        println " checkInitClass " + entryName + ", path: " + srcFilePath + ", destFile: " + destFile.absolutePath
         entryName = entryName.substring(0, entryName.lastIndexOf('.'))
         def found = false
         infoList.each { ext ->

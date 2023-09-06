@@ -17,4 +17,4 @@ dependencies {
     implementation ASM.asmCommons
 }
 
-apply from: rootProject.file('gradle/maven_push.gradle')
+apply from: rootProject.file('buildSrc/maven_push.gradle')
