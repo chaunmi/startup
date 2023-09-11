@@ -11,9 +11,13 @@ import com.cnoke.startup.task.StartUp
  * @describe
  */
 class MyApplication : StartUpApplication() {
+
+    private val appTestRegister by lazy { TestInsertClasses() }
+
     override fun onCreate() {
         super.onCreate()
         StartUp(this).isDebug(true).start()
+        appTestRegister.onCreate()
         Log.e("MyApplication","onCreate Finish")
     }
 }

@@ -57,6 +57,7 @@ class CodeScanProcessor(val infoList: ArrayList<RegisterInfo>,
         var found = false
         infoList.forEach { ext ->
             if (ext.initClassName == newEntryName) {
+                println(" checkInitClassNew find $newEntryName in $fileContainsInitClassPath ")
                 ext.fileContainsInitClassPath = fileContainsInitClassPath
                 RegisterInfo.addFileContainsInitClassToMap(fileContainsInitClassPath)
                 if (fileContainsInitClassPath.endsWith(".jar")) {

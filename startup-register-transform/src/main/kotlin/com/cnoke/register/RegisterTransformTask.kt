@@ -133,8 +133,6 @@ abstract class RegisterTransformTask: DefaultTask() {
             jarFile.close()
         }else {
             if(!inputEntryName.isNullOrEmpty()) {
-//                val relativePath = dirFile.toURI().relativize(inputFile.toURI()).path
-//                val name = relativePath.replace(File.separatorChar, '/')
                 println(" adding from directory $inputEntryName")
                 jarOutput.putNextEntry(JarEntry(inputEntryName))
                 inputFile.inputStream().use { inputStream ->

@@ -13,9 +13,9 @@ open class AutoRegisterConfig: Serializable, Cloneable {
         const val REGISTER_CLASS_NAME = "registerClassName"
         const val REGISTER_METHOD_NAME = "registerMethodName"
         const val IS_INSTANCE = "isInstance"
+
+
     }
-    
-    var registerInfo = ArrayList<Map<String, Any>>()
 
     var list = ArrayList<RegisterInfo>()
 
@@ -33,7 +33,7 @@ open class AutoRegisterConfig: Serializable, Cloneable {
         }
     }
 
-    fun convertToRegisterInfo() {
+    fun convertToRegisterInfo(registerInfo: List<Map<String, Any>>) {
         registerInfo.forEach { map ->
             val info = RegisterInfo()
             info.interfaceName = map[INTERFACE_NAME] as String
@@ -61,12 +61,12 @@ open class AutoRegisterConfig: Serializable, Cloneable {
             if (info.validate())
                 list.add(info)
             else {
-                project.logger.error("auto register config error: scanInterface, codeInsertToClassName and registerMethodName should not be null\n$info")
+//                project.logger.error("auto register config error: scanInterface, codeInsertToClassName and registerMethodName should not be null\n$info")
             }
         }
     }
 
-    fun convertConfig() {
+    fun convertConfig(registerInfo: List<Map<String, Any>>) {
         registerInfo.forEach { map ->
             val info = RegisterInfo()
             map[INTERFACE_NAME]?.let {

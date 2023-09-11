@@ -18,7 +18,7 @@ class RegisterPlugin : Plugin<Project>{
         // com.android.test                             -> TestPlugin::class.java
         // com.android.dynamic-feature, added in 3.2    -> DynamicFeaturePlugin::class.java
         val isApp = project.plugins.hasPlugin(AppPlugin::class.java)
-        project.extensions.create(EXT_NAME, AutoRegisterConfig::class.java)
+        project.extensions.create(EXT_NAME, AutoRegisterConfigExt::class.java)
         project.logger.log(LogLevel.INFO, " RegisterPlugin -->$isApp ")
         println("RegisterPlugin -->$isApp")
         if(isApp) {
@@ -55,32 +55,50 @@ class RegisterPlugin : Plugin<Project>{
        const val EXT_NAME = "autoregister"
 
         fun getRegisterConfig(project: Project): AutoRegisterConfig {
-            var config = project.extensions.findByName(EXT_NAME) as? AutoRegisterConfig
+            val configExt = project.extensions.findByType(AutoRegisterConfigExt::class.java)
+            println(" registerExt , cacheEnabled: ${configExt?.cacheEnabled?.orNull}, \n" +
+                    " registerInfo: ${configExt?.registerInfo?.orNull} ")
 
-            if(config == null || config.registerInfo.isEmpty()){
-                config =  AutoRegisterConfig()
+            val config = AutoRegisterConfig()
+            config.project = project
+
+            configExt?.apply {
+                cacheEnabled.orNull?.let {
+                    config.cacheEnabled = it
+                }
+                registerInfo.orNull?.let {
+                    config.convertConfig(it)
+                }
             }
 
-            val startup:HashMap<String, Any> = hashMapOf()
-            startup[AutoRegisterConfig.INTERFACE_NAME] = "com.cnoke.startup.application.IApplication"
-            startup[AutoRegisterConfig.INSERT_TO_CLASS_NAME] = "com.cnoke.startup.FinalAppRegister"
-            startup[AutoRegisterConfig.INSERT_TO_METHOD_NAME] = "init"
-            startup[AutoRegisterConfig.REGISTER_CLASS_NAME] = "com.cnoke.startup.FinalAppRegister"
-            startup[AutoRegisterConfig.REGISTER_METHOD_NAME] = "register"
-            startup[AutoRegisterConfig.IS_INSTANCE] = true
-            config.registerInfo.add(startup)
+//            val startup:HashMap<String, Any> = hashMapOf()
+//            startup[AutoRegisterConfig.INTERFACE_NAME] = "com.cnoke.startup.application.IApplication"
+//            startup[AutoRegisterConfig.INSERT_TO_CLASS_NAME] = "com.cnoke.startup.FinalAppRegister"
+//            startup[AutoRegisterConfig.INSERT_TO_METHOD_NAME] = "init"
+//            startup[AutoRegisterConfig.REGISTER_CLASS_NAME] = "com.cnoke.startup.FinalAppRegister"
+//            startup[AutoRegisterConfig.REGISTER_METHOD_NAME] = "register"
+//            startup[AutoRegisterConfig.IS_INSTANCE] = true
+//            config.registerInfo.add(startup)
+//
+//            val initTask: HashMap<String, Any> = hashMapOf()
+//            initTask[AutoRegisterConfig.INTERFACE_NAME] = "com.cnoke.startup.task.InitTask"
+//            initTask[AutoRegisterConfig.INSERT_TO_CLASS_NAME] = "com.cnoke.startup.FinalTaskRegister"
+//            initTask[AutoRegisterConfig.INSERT_TO_METHOD_NAME] = "init"
+//            initTask[AutoRegisterConfig.REGISTER_CLASS_NAME] = "com.cnoke.startup.FinalTaskRegister"
+//            initTask[AutoRegisterConfig.REGISTER_METHOD_NAME] = "register"
+//            initTask[AutoRegisterConfig.IS_INSTANCE] = false
+//            config.registerInfo.add(initTask)
+//
+//            val startupTest:HashMap<String, Any> = hashMapOf()
+//            startupTest[AutoRegisterConfig.INTERFACE_NAME] = "com.cnoke.startup.application.IApplication"
+//            startupTest[AutoRegisterConfig.INSERT_TO_CLASS_NAME] = "com.conke.demo.TestInsertClasses"
+//            startupTest[AutoRegisterConfig.INSERT_TO_METHOD_NAME] = "init"
+//            startupTest[AutoRegisterConfig.REGISTER_CLASS_NAME] = "com.conke.demo.TestInsertClasses"
+//            startupTest[AutoRegisterConfig.REGISTER_METHOD_NAME] = "register"
+//            startupTest[AutoRegisterConfig.IS_INSTANCE] = true
+//            config.registerInfo.add(startupTest)
 
-            val initTask: HashMap<String, Any> = hashMapOf()
-            initTask[AutoRegisterConfig.INTERFACE_NAME] = "com.cnoke.startup.task.InitTask"
-            initTask[AutoRegisterConfig.INSERT_TO_CLASS_NAME] = "com.cnoke.startup.FinalTaskRegister"
-            initTask[AutoRegisterConfig.INSERT_TO_METHOD_NAME] = "init"
-            initTask[AutoRegisterConfig.REGISTER_CLASS_NAME] = "com.cnoke.startup.FinalTaskRegister"
-            initTask[AutoRegisterConfig.REGISTER_METHOD_NAME] = "register"
-            initTask[AutoRegisterConfig.IS_INSTANCE] = false
-            config.registerInfo.add(initTask)
 
-            config.project = project
-            config.convertConfig()
             return config
         }
     }

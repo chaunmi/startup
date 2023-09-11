@@ -1,7 +1,5 @@
 package com.cnoke.register
 
-import org.gradle.api.file.Directory
-import java.io.File
 import java.io.Serializable
 import java.util.regex.Pattern
 
@@ -58,6 +56,7 @@ class RegisterInfo: Serializable, Cloneable {
             sb.append(" \"").append(superClassNames[i]).append("\"")
         }
         sb.append(" ]")
+        sb.append("\n\t").append("isInstance").append("\t\t\t=\t").append(isInstance)
         sb.append("\n\t").append("codeInsertToClassName").append("\t=\t").append(initClassName)
         sb.append("\n\t").append("codeInsertToMethodName").append("\t=\t").append(initMethodName)
         sb.append("\n\t").append("registerMethodName").append("\t\t=\tpublic static void ")
