@@ -69,7 +69,7 @@ object AutoRegisterHelper {
         textToFile(harvests, cacheFile)
     }
 
-    private fun  getCacheFileDir(project: Project): String {
+     fun  getCacheFileDir(project: Project): String {
         return project.buildDir.absolutePath + File.separator + SdkConstants.FD_INTERMEDIATES + File.separator + CACHE_INFO_DIR + File.separator
     }
 

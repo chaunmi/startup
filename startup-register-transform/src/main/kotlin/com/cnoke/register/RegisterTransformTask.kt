@@ -2,6 +2,7 @@ package com.cnoke.register
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
@@ -10,7 +11,10 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.component.external.model.ComponentVariant
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
@@ -86,10 +90,29 @@ abstract class RegisterTransformTask: DefaultTask() {
 
             println(" scan classes end cost: " + (System.currentTimeMillis() - scanStartTime))
 
+            val fileContainsInitClassList = arrayListOf<String>()
+
+            val tempFilePath = AutoRegisterHelper.getCacheFileDir(project)
+
+            FileUtils.cleanDirectory(File(tempFilePath))
+
+            println(" clean startup-register cache $tempFilePath ")
+
             registerConfig.list.forEach { registerInfo ->
                 println(" execute insert $registerInfo ")
                 if(registerInfo.fileContainsInitClassPath.isNotEmpty()) {
                     val filePath = registerInfo.fileContainsInitClassPath
+
+                    val srcFile = File(filePath)
+                    val destFilePath = tempFilePath + srcFile.name
+                    val destFile = File(destFilePath)
+
+                    if(!destFile.exists()) {
+                        println(" copy $filePath to $destFilePath ")
+                        FileUtils.copyFile(srcFile, destFile)
+                    }
+                    registerInfo.fileContainsInitClassPath = destFilePath
+
                     println("insert register code to file path: " + registerInfo.fileContainsInitClassPath)
                     if(registerInfo.classList.isEmpty()) {
                         project.logger.error("No class implements found for interface:" + registerInfo.interfaceName)
@@ -98,9 +121,16 @@ abstract class RegisterTransformTask: DefaultTask() {
                             println(it)
                         }
                         CodeInsertProcessor.insertInitCodeTo(registerInfo)
+
+                        val count = RegisterInfo.getFileContainsInitClassCount(filePath)
                         // 不存在同一个jar包中的多个文件需要执行插入代码操作，直接打包到输出jar中
-                        if(RegisterInfo.getFileContainsInitClassCount(filePath) == 1) {
-                            outputToJar(File(filePath), output, registerInfo.fileContainsInitClassEntryName)
+                        if(count == 1) {
+                            outputToJar(File(registerInfo.fileContainsInitClassPath), output,
+                                registerInfo.fileContainsInitClassEntryName)
+                        }else if(count > 1){
+                            if(!fileContainsInitClassList.contains(registerInfo.fileContainsInitClassPath)) {
+                                fileContainsInitClassList.add(registerInfo.fileContainsInitClassPath)
+                            }
                         }
                     }
                 }else {
@@ -108,11 +138,17 @@ abstract class RegisterTransformTask: DefaultTask() {
                 }
             }
 
-            RegisterInfo.fileContainsInitClassMap.forEach { (filePath, count) ->
-                if(count > 1) {
-                    outputToJar(File(filePath), output)
-                }
+            fileContainsInitClassList.forEach {
+                println(" outputToJar $it ")
+                outputToJar(File(it), output)
             }
+            //最后输出存在多次插入同一个jar包的文件
+//            RegisterInfo.fileContainsInitClassMap.forEach { (filePath, count) ->
+//                if(count > 1) {
+//                    println(" outputToJar $filePath ")
+//                    outputToJar(File(filePath), output)
+//                }
+//            }
         }
         println(" transform end, cost:  " + (System.currentTimeMillis() - startTime))
 

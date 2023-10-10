@@ -18,6 +18,6 @@ class MyApplication : StartUpApplication() {
         super.onCreate()
         StartUp(this).isDebug(true).start()
         appTestRegister.onCreate()
-        Log.e("MyApplication","onCreate Finish")
+        Log.e("MyApplication","   onCreate Finish   ")
     }
 }

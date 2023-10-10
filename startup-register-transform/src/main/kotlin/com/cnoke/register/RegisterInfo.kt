@@ -7,6 +7,7 @@ class RegisterInfo: Serializable, Cloneable {
     //以下是可配置参数
     var interfaceName = ""
     var superClassNames = arrayListOf<String>()
+    //待注入修改的类
     var initClassName = ""
     var initMethodName = ""
     var registerClassName = ""
